@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cohere-transcribe-ara-cli"
+dynamic = ["version"]
+description = "CLI to decode, evaluate and fine-tune Cohere Transcribe (Arabic) ASR on Common-Voice-like TSV manifests"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Waad Ben Kheder" }]
+keywords = ["asr", "speech-recognition", "arabic", "cohere", "transformers", "fine-tuning", "wer"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Multimedia :: Sound/Audio :: Speech",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "torch>=2.4",
+  "transformers>=5.4.0",
+  "accelerate>=1.0",
+  "huggingface_hub",
+  "soundfile>=0.12",
+  "librosa>=0.10",
+  "sentencepiece",
+  "protobuf",
+  "numpy",
+  "rapidfuzz>=3.0",
+  "tqdm",
+]
+
+[project.optional-dependencies]
+lora = ["peft>=0.13"]
+bnb = ["bitsandbytes>=0.43"]
+tensorboard = ["tensorboard"]
+wandb = ["wandb"]
+all = ["peft>=0.13", "bitsandbytes>=0.43", "tensorboard"]
+dev = ["pytest>=7", "ruff>=0.5", "peft>=0.13"]
+
+[project.scripts]
+cohere-ara = "cohere_transcribe_ara_cli.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wa3dbk/cohere-transcribe-ara-cli"
+Model = "https://huggingface.co/CohereLabs/cohere-transcribe-arabic-07-2026"
+
+[tool.setuptools.dynamic]
+version = { attr = "cohere_transcribe_ara_cli.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B008", "B905"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["slow: end-to-end tests that run the tiny model (CPU, ~1 min)"]
